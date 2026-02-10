@@ -11,7 +11,7 @@ export interface DataSource {
 
 export class DataLoaderManager {
 	plugin: ObservableFrameworkPlugin;
-	private loaders: Map<string, any> = new Map();
+	private loaders: Map<string, unknown> = new Map();
 
 	constructor(plugin: ObservableFrameworkPlugin) {
 		this.plugin = plugin;
@@ -20,7 +20,7 @@ export class DataLoaderManager {
 	/**
 	 * Load data from a vault file
 	 */
-	async loadFromFile(path: string): Promise<any> {
+	async loadFromFile(path: string): Promise<unknown> {
 		const file = this.plugin.app.vault.getAbstractFileByPath(path);
 		
 		if (!file || !(file instanceof TFile)) {
@@ -45,7 +45,7 @@ export class DataLoaderManager {
 	/**
 	 * Load data from an external API
 	 */
-	async loadFromAPI(url: string, options?: RequestInit): Promise<any> {
+	async loadFromAPI(url: string, options?: RequestInit): Promise<unknown> {
 		try {
 			const response = await fetch(url, options);
 			if (!response.ok) {
@@ -70,7 +70,7 @@ export class DataLoaderManager {
 	/**
 	 * Execute a data loader script
 	 */
-	async executeLoader(loaderName: string, loaderCode: string): Promise<any> {
+	async executeLoader(loaderName: string, loaderCode: string): Promise<unknown> {
 		// Store the loader for later use
 		this.loaders.set(loaderName, loaderCode);
 
@@ -88,7 +88,7 @@ export class DataLoaderManager {
 	/**
 	 * Execute JavaScript data loader
 	 */
-	private async executeJavaScriptLoader(code: string): Promise<any> {
+	private async executeJavaScriptLoader(code: string): Promise<unknown> {
 		// Create a sandboxed function
 		// Note: This is a simplified version. Full Observable Framework would use more sophisticated sandboxing
 		try {
@@ -115,16 +115,16 @@ export class DataLoaderManager {
 	/**
 	 * Parse CSV content
 	 */
-	private parseCSV(content: string): any[] {
+	private parseCSV(content: string): unknown[] {
 		const lines = content.trim().split('\n');
 		if (lines.length === 0) return [];
 
 		const headers = lines[0]?.split(',').map(h => h.trim()) || [];
-		const data: any[] = [];
+		const data: unknown[] = [];
 
 		for (let i = 1; i < lines.length; i++) {
 			const values = lines[i]?.split(',').map(v => v.trim()) || [];
-			const row: any = {};
+			const row: unknown = {};
 			
 			headers.forEach((header, index) => {
 				const value = values[index];
@@ -141,7 +141,7 @@ export class DataLoaderManager {
 	/**
 	 * Parse markdown table
 	 */
-	private parseMarkdownTable(content: string): any[] {
+	private parseMarkdownTable(content: string): unknown[] {
 		const lines = content.split('\n');
 		const tableLines: string[] = [];
 		let inTable = false;
@@ -164,7 +164,7 @@ export class DataLoaderManager {
 			.filter(h => h.length > 0) || [];
 
 		// Skip separator line (line 1)
-		const data: any[] = [];
+		const data: unknown[] = [];
 		for (let i = 2; i < tableLines.length; i++) {
 			const values = tableLines[i]?.split('|')
 				.map(v => v.trim())
@@ -172,7 +172,7 @@ export class DataLoaderManager {
 			
 			if (values.length === 0) continue;
 
-			const row: any = {};
+			const row: unknown = {};
 			headers.forEach((header, index) => {
 				const value = values[index];
 				row[header] = isNaN(Number(value)) ? value : Number(value);
